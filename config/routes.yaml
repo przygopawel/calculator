@@ -1,0 +1,4 @@
+operations:
+    type: rest
+    prefix: /api/rest/v1
+    resource: App\Application\Rest\V1\OperationsController
