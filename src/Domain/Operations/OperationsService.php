@@ -2,7 +2,7 @@
 namespace App\Domain\Operations;
 
 use App\Domain\Operations\Commands\CreateOperationsCommand;
-use App\Entity\Operations as OperationsEntity;
+use App\Entity\Operation as OperationsEntity;
 
 class OperationsService implements OperationsServiceInterface
 {
@@ -13,9 +13,14 @@ class OperationsService implements OperationsServiceInterface
         $this->operationsRepository = $operationsRepository;
     }
 
-    public function getAllOperations(): ?array
+    public function getAllOperations(int $page, int $perPage): ?array
     {
-        return $this->operationsRepository->getAll();
+        return $this->operationsRepository->getAll($page, $perPage);
+    }
+
+    public function getCount(): ?int
+    {
+        return $this->operationsRepository->getCount();
     }
 
     public function createOperations(CreateOperationsCommand $createCommand): OperationsEntity

@@ -2,8 +2,9 @@
 
 namespace App\Repository;
 
+use App\Domain\Operations\Exceptions\OperationNotFoundException;
 use App\Domain\Operations\OperationsRepositoryInterface;
-use App\Entity\Operations;
+use App\Entity\Operation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -11,25 +12,40 @@ class OperationsRepository extends ServiceEntityRepository implements Operations
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Operations::class);
+        parent::__construct($registry, Operation::class);
     }
 
-    public function getAll(): ?array
+    public function getAll(int $page, int $limit): ?array
     {
-        return $this->findAll();
+        return $this->findBy(
+            [],
+            null,
+            $limit,
+            ($page - 1) * $limit
+        );
     }
 
-    public function get(int $id): Operations
+    public function getCount(): ?int
+    {
+        return $this->count([]);
+    }
+
+    public function get(int $id): Operation
     {
         /**
-         * @var Operations $operation
+         * @var Operation $operation
          */
-        $operation =  $this->find($id);
+        $operation = $this->find($id);
+
+        if (!$operation) {
+            throw new OperationNotFoundException($id);
+        }
 
         return $operation;
+
     }
 
-    public function save(Operations $operation): void
+    public function save(Operation $operation): void
     {
         $entityManager = $this->getEntityManager();
 
